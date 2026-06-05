@@ -19,19 +19,21 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Add Host
+      - name: Add VPS to Known Hosts
         run: |
           ssh-keyscan -p 8022 103.174.237.194 >> ~/.ssh/known_hosts
 
-      - name: Test Connection
+      - name: Test SSH Connection
         run: |
           ssh -i ~/.ssh/id_rsa -p 8022 \
           polindra123@103.174.237.194 \
-          "echo KONEK"
+          "echo 'SSH Connection Success'"
 
-      - name: Deploy
+      - name: Deploy Website
         run: |
           rsync -avz --delete \
+          --exclude='.git' \
+          --exclude='.github' \
           -e "ssh -i ~/.ssh/id_rsa -p 8022" \
           ./ \
-          polindra123@103.174.237.194:/var/www/html/NIM_WEBSITE_TUGAS
+          polindra123@103.174.237.194:/var/www/html/2405063_WEBSITE_TUGAS/
